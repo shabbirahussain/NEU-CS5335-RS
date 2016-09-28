@@ -17,15 +17,15 @@ function hw1(questionNum)
 
     % ************* Question 1 *******************
     if questionNum == 1
-        close all;
-        figure;
+        %close all;
+        %figure;
         f1.plot(q1Init,'jointdiam',1);
         hold on;	
         drawSphere(spherePos,0.1);
 
         % TODO: you implement this function (Q1)
         q1Ball = Q1(f1,spherePos);
-%         q1Ball = Q1_answer(f1,spherePos);
+        %q1Ball = Q1_answer(f1,spherePos);
 
         t = [0:0.05:2]';
         traj = jtraj(q1Init, q1Ball, t);
@@ -34,8 +34,8 @@ function hw1(questionNum)
 
     % ************* Question 2 *******************
     if questionNum == 2
-        close all;
-        figure;
+        %close all;
+        %figure;
         f1.plot(q1Init,'jointdiam',1);
         hold on;	
         drawSphere(spherePos,0.1);
@@ -51,8 +51,8 @@ function hw1(questionNum)
     
     % ************* Question 3 *******************
     if questionNum == 3
-        close all;
-        figure;
+        %close all;
+        %figure;
         f1.plot(q1Init,'jointdiam',1);
         hold on;	
         drawSphere(spherePos,0.1);
@@ -68,8 +68,8 @@ function hw1(questionNum)
 
     % ************* Question 4 *******************
     if questionNum == 4
-        close all;
-        figure;
+        %close all;
+        %figure;
         f1.plot(q1Init,'jointdiam',1);
         hold on;	
         f2.plot(q2Init,'jointdiam',1);
@@ -90,8 +90,8 @@ function hw1(questionNum)
 
     % ************* Question 5 *******************
     if questionNum == 5
-        close all;
-        figure;
+        %close all;
+        %figure;
         f1.plot(q1Init,'jointdiam',1);
         hold on;	
         f2.plot(q2Init,'jointdiam',1);

@@ -8,5 +8,5 @@ function q = Q1(f,position)
     R = [1 0 0;0 1 0; 0 0 1];
     T = [R position;0 0 0 1];
     q = f.ikine(T);
-    %q = f.ikine(T,position');
+    q = f.ikine(T,posit);
 end
