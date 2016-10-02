@@ -13,8 +13,23 @@
 %              reach the desired positions simultaneously.
 %              (orientation is to be ignored)
 function q = Q4(f1,f2,qInit,f1Target,f2Target)
-
-
+    alpha = 0.05;
+    q = qInit(:,1:7);
+    R = [1 0 0; 0 -1 0; 0 0 -1];
+    posGoal = [R f1Target; 0 0 0 1];
+    
+    for i=1:50
+        p = f1.fkine([q 0 0]);
+        %deltaX  = (posGoal-p);
+        %deltaX = tr2delta(deltaX);
+        
+        deltaX = tr2delta(p, posGoal);
+        
+        J  = f1.jacob0([q 0 0]);
+        deltaQ  = alpha * pinv(J) * deltaX;
+        q  = deltaQ(1:7,:)' + q ;
+    end
+    q = [q 0 0 0 0];
 
 end
 

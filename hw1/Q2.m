@@ -8,6 +8,22 @@
 function q = Q2(f,qInit,posGoal)
     alpha = 0.6;
     q = qInit;
+    R = [1 0 0; 0 -1 0; 0 0 -1];
+    posGoal = [R posGoal; 0 0 0 1];
+    
+    for i=1:50
+        p = f.fkine(q);
+        deltaX = tr2delta(p, posGoal);
+        
+        J  = f.jacob0(q);
+        deltaQ  = alpha * pinv(J) * deltaX;
+        q  = deltaQ' + q;
+    end
+end
+
+function q = Q2_1(f,qInit,posGoal)
+    alpha = 0.6;
+    q = qInit;
     
     for i=1:5
         p = f.fkine(q);
@@ -20,4 +36,3 @@ function q = Q2(f,qInit,posGoal)
         q  = deltaQ' + q;
     end
 end
-
