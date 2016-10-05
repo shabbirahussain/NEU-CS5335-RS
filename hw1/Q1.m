@@ -5,8 +5,12 @@
 %              effector position to reach <position>
 %              (orientation is to be ignored)
 function q = Q1(f,position)
+    % Constants
     R = [1 0 0;0 1 0; 0 0 1];
+    
+    % Calculate position goals
     T = [R position;0 0 0 1];
+    
+    % Calculate joint angles
     q = f.ikine(T);
-    %q = f.ikine(T,position');
 end

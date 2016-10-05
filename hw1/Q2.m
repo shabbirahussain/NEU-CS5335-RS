@@ -6,21 +6,32 @@
 %                     effector position to reach <position>
 %                     (orientation is to be ignored)
 function q = Q2(f,qInit,posGoal)
+    % Constants
     alpha = 0.6;
-    q = qInit;
     R = [1 0 0; 0 -1 0; 0 0 -1];
+    
+    % Calculate position goals
+    q = qInit;
     posGoal = [R posGoal; 0 0 0 1];
     
     for i=1:50
         p = f.fkine(q);
-        deltaX = tr2delta(p, posGoal);
+        dX = tr2delta(p, posGoal);
         
+        % Calculate Jacobian
         J  = f.jacob0(q);
-        deltaQ  = alpha * pinv(J) * deltaX;
-        q  = deltaQ' + q;
+        Ji = pinv(J);
+        
+        % Calculate joint angles
+        dQ = alpha * Ji * dX;
+        q  = dQ' + q;
     end
 end
 
+
+
+
+% Extra: Kindly ignore
 function q = Q2_1(f,qInit,posGoal)
     alpha = 0.6;
     q = qInit;
