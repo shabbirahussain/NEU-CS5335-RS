@@ -11,8 +11,8 @@
 %                    last milestone should place the end effector at xGoal.
 function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
     % Constants
-    ALPHA    = 10;      % Angular step size
-    EPSILON  = 0.1;     % Error tolerance
+    ALPHA    = 1;      % Angular step size
+    EPSILON  = 0.05;     % Error tolerance
     F_PLOT_T = false;
     
     % Calculate position goals
@@ -86,7 +86,7 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         for i = 1:l
             p = rob.fkine(qMilestones(i,:));
             
-            scatter3(p(1), p(2), p(3), 'x');
+            scatter3(p(1,4), p(2,4), p(3,4), 'x');
         end;
     end;
     
