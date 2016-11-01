@@ -95,7 +95,7 @@ end
 
 function goal = getGoal(qGoal)
     if(rand<.6) 
-        goal = mod(rand(size(qGoal))*100, 360);
+        goal = mod(rand(size(qGoal))*10, 2*pi);
     else 
         goal = qGoal;
     end;
