@@ -12,7 +12,7 @@
 function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
     % Constants
     ALPHA    = 1;      % Angular step size
-    EPSILON  = 0.05;     % Error tolerance
+    EPSILON  = 0.1;     % Error tolerance
     F_PLOT_T = false;
     
     % Calculate position goals
@@ -80,6 +80,7 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         idx = parent(idx);
         
     end;
+    qMilestones = [qMilestones; qGoal];
     
     if(F_PLOT_T)
         [l,~] = size(qMilestones);
@@ -94,7 +95,7 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
 end
 
 function goal = getGoal(qGoal)
-    if(rand<.6) 
+    if(rand<.8) 
         goal = mod(rand(size(qGoal))*10, 2*pi);
     else 
         goal = qGoal;

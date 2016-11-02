@@ -15,7 +15,7 @@ function collision = Q1(rob,q1,q2,sphereCenter,r)
     collision = false;
     
     [~, w] = size(q1); q = zeros(w, MAX_SEG);
-    for i=1:length(q1)
+    for i=1:w
         q(i,:) = linspace(q1(i), q2(i), MAX_SEG);
     end
     q = q';
