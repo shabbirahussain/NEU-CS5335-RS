@@ -2,7 +2,7 @@
 % DO NOT MODIFY THIS FILE!
 % input: questionNum -> Integer between 1 and 3 that denotes question
 %                       number to run.
-function hw2(questionNum)
+function hw2(questionNum, traj)
 
 %     close all;
     
@@ -31,16 +31,22 @@ function hw2(questionNum)
         collision = Q1(rob,qStart,[0 -0.78 0 -0.1],sphereCenter,sphereRadius);
         display(['this should be 1: ',int2str(collision)])        
     elseif questionNum == 2
-        qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal);
-
+        if(nargin == 1)
+            qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal);
+        else
+            qMilestones = traj;
+        end;
         % interpolate and plot direct traj from start to goal
         qTraj = interpMilestones(qMilestones);
         rob.plot(qTraj);
         
     elseif questionNum == 3
-        qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal);
-        qMilestones = Q3(rob,qMilestones,sphereCenter,sphereRadius);
-
+        if(nargin == 1)
+            qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal);
+            qMilestones = Q3(rob,qMilestones,sphereCenter,sphereRadius);
+        else
+            qMilestones = traj;
+        end;
         % interpolate and plot direct traj from start to goal
         qTraj = interpMilestones(qMilestones);
         rob.plot(qTraj);

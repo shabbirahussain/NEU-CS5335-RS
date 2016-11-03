@@ -11,8 +11,8 @@
 %                    last milestone should place the end effector at xGoal.
 function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
     % Constants
-    ALPHA    = 1;     % Angular step size
-    EPSILON  = 0.01;     % Error tolerance
+    ALPHA    = 1;       % Angular step size
+    EPSILON  = 0.01;    % Error tolerance
     F_PLOT_T = false;
     
     % Add buffer space
@@ -35,12 +35,12 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         
         q1  = tree(idx,:);
         
-        % Calculate forward kinematics
+        % Get distance in configuration
         dis = pdist([q1;q2]);
         %dis = getDist(rob, q1, q2);
         
         % Don't add redundant nodes to the tree
-        %if(dis<EPSILON) continue; end;
+        if(dis<EPSILON) continue; end;
 
         % Shortcuircit goal node
         collision = true;

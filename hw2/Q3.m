@@ -7,16 +7,16 @@
 %                    collision-free path. You should output a number of
 %                    milestones m<=n.
 function qMilestonesSmoothed = Q3(rob,qMilestones,sphereCenter,sphereRadius)
+    sphereRadius1 = sphereRadius * 1.2;
     qMilestonesSmoothed = qMilestones;
     
     [pGoal,~] = size(qMilestonesSmoothed);
     while(true)
-        [l,~] = size(qMilestonesSmoothed);
         qGoal = qMilestonesSmoothed(pGoal,:);
-        for i=1:l-2
+        for i=1:pGoal-2
             q1 = qMilestonesSmoothed(i,:);
             % Keep on moving source till we find unobstructed path
-            collision = Q1(rob, q1, qGoal, sphereCenter, sphereRadius);
+            collision = Q1(rob, q1, qGoal, sphereCenter, sphereRadius1);
             if(collision) continue; end;
             
             % Delete intermediate rows
