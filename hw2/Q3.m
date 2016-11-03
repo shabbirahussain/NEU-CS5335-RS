@@ -20,8 +20,8 @@ function qMilestonesSmoothed = Q3(rob,qMilestones,sphereCenter,sphereRadius)
             if(collision) continue; end;
             
             % Delete intermediate rows
-            qMilestonesSmoothed(i+1:l-1,:) = [];
-            pGoal = pGoal - (l-1)-(i+1);
+            qMilestonesSmoothed(i+1:pGoal-1,:) = [];
+            pGoal = i+1; 
             break;
         end;
         

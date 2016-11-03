@@ -11,7 +11,7 @@
 % output: collision -> binary number that denotes whether this
 %                      configuration is in collision or not.
 function collision = Q1(rob,q1,q2,sphereCenter,r)
-    MAX_SEG = 10;
+    MAX_SEG = 20;
     collision = false;
     
     [~, w] = size(q1); q = zeros(w, MAX_SEG);

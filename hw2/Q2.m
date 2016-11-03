@@ -11,9 +11,12 @@
 %                    last milestone should place the end effector at xGoal.
 function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
     % Constants
-    ALPHA    = 1;      % Angular step size
-    EPSILON  = 0.1;     % Error tolerance
+    ALPHA    = 1;     % Angular step size
+    EPSILON  = 0.01;     % Error tolerance
     F_PLOT_T = false;
+    
+    % Add buffer space
+    sphereRadius1 = sphereRadius * 1.2;
     
     % Calculate position goals
     tree=[qStart]; parent=[-1];
@@ -27,25 +30,27 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         q2 = getGoal(qGoal);
         
         % Gets the closest node to expand
-        mdl = KDTreeSearcher(tree);
-        idx = mdl.knnsearch(q2);
+        idx = getNearestNeighborC(tree, q2);      % From CSpace
+        %idx = getNearestNeighbor(rob, tree, q2); % From cartesian space
+        
         q1  = tree(idx,:);
         
         % Calculate forward kinematics
-        dis = pdist([q1; q2]);
+        dis = pdist([q1;q2]);
+        %dis = getDist(rob, q1, q2);
         
         % Don't add redundant nodes to the tree
-        if(dis<EPSILON) continue; end;
+        %if(dis<EPSILON) continue; end;
 
         % Shortcuircit goal node
         collision = true;
         if(q2 == qGoal)
-            collision = Q1(rob, q1, qGoal, sphereCenter, sphereRadius);
+            collision = Q1(rob, q1, qGoal, sphereCenter, sphereRadius1);
         end;
         
         % Find a point towards goal if dist > alpha
         if(collision && dis > ALPHA)
-            mSeg = ceil(dis/ALPHA);
+            mSeg = max(40, ceil(dis/ALPHA));
             [~, w] = size(q1); q = zeros(w, mSeg);
             for i=1:length(q1)
                 q(i,:) = linspace(q1(i), q2(i), mSeg);
@@ -55,7 +60,7 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         end
 
         % Check for collision
-        collision = Q1(rob, q1, q2, sphereCenter, sphereRadius);
+        collision = Q1(rob, q1, q2, sphereCenter, sphereRadius1);
         if(collision) continue; end;
 
         tree   = [tree; q2];
@@ -67,9 +72,8 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
             scatter3(p(1), p(2), p(3));
         end;
         
-            
-        dis = getDist(rob, qGoal, q2);
-        if(dis < EPSILON) break; end;
+        % Break if able to connect to goal node
+        if(qGoal == q2) break; end;
     end
     
     qMilestones=[];
@@ -80,7 +84,7 @@ function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
         idx = parent(idx);
         
     end;
-    qMilestones = [qMilestones; qGoal];
+    %qMilestones = [qMilestones; qGoal];
     
     if(F_PLOT_T)
         [l,~] = size(qMilestones);
@@ -96,7 +100,7 @@ end
 
 function goal = getGoal(qGoal)
     if(rand<.8) 
-        goal = mod(rand(size(qGoal))*10, 2*pi);
+        goal = mod(rand(size(qGoal))*15, 4*pi)-2*pi;
     else 
         goal = qGoal;
     end;
@@ -113,6 +117,27 @@ function dis = getDist(rob, q1, q2)
     dis = [p1'; p2']; 
     dis = pdist(dis);
 end
+
+function idx = getNearestNeighborC(X, p)
+    [l,~] = size(X);
+    dist     = X - repmat(p, l, 1);
+    dist     = sqrt(sum(dist.^2,2));
+    [~, idx] = min(dist);
+end
+
+
+
+function idx = getNearestNeighbor(rob, X, p)
+    [l,~] = size(X);
+    idx = 1; minV = +Inf;
+    for i=1:l
+        dist    = getDist(rob, X(i,:), p);
+        if(dist<minV)
+            minV = dist; idx = i;
+        end;
+    end;
+end
+
 
 function q = HW1_Q2(f,qInit,posGoal)
     % Constants
