@@ -11,9 +11,9 @@
 %                    last milestone should place the end effector at xGoal.
 function qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal)
     % Constants
-    ALPHA    = 1;       % Angular step size
+    ALPHA    = 0.1;       % Angular step size
     EPSILON  = 0.01;    % Error tolerance
-    F_PLOT_T = false;
+    F_PLOT_T = true;
     
     % Add buffer space
     sphereRadius1 = sphereRadius * 1.2;

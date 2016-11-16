@@ -43,7 +43,9 @@ function hw2(questionNum, traj)
     elseif questionNum == 3
         if(nargin == 1)
             qMilestones = Q2(rob,sphereCenter,sphereRadius,qStart,xGoal);
+            assignin('base', 'qMilestones', qMilestones);
             qMilestones = Q3(rob,qMilestones,sphereCenter,sphereRadius);
+            assignin('base', 'qMilestonesSmoothed', qMilestones);
         else
             qMilestones = traj;
         end;
