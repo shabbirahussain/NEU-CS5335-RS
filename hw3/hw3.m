@@ -2,7 +2,7 @@
 % DO NOT MODIFY THIS FILE!
 % input: questionNum -> Integer between 1 and 5 that denotes question
 %                       number to run.
-function hw1(questionNum)
+function hw3(questionNum)
 
     close all;
 
@@ -16,7 +16,7 @@ function hw1(questionNum)
 
         % approximately segment object from background
         roi = [-inf,0.5,0.2,0.4,0.1,inf]; % segment sphere
-%         roi = [-inf,inf,-inf,inf,-inf,inf]; % no segmentation 
+        %roi = [-inf,inf,-inf,inf,-inf,inf]; % no segmentation 
         indices = findPointsInROI(ptCloud,roi);
         ptCloudB = select(ptCloudOrig,indices);
         
