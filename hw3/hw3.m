@@ -4,13 +4,16 @@
 %                       number to run.
 function hw3(questionNum)
 
-    close all;
 
     % load point cloud
     load('object3d.mat');
     ptCloudOrig = ptCloud;
 
-    
+    % display cloud
+    %close all; figure;
+    pcshow(ptCloudOrig);
+    hold on;
+
     % ************* Question 1 *******************
     if questionNum == 1
 
@@ -23,10 +26,7 @@ function hw3(questionNum)
         % locate sphere
         [center,radius] = Q1(ptCloudB);
 
-        % display cloud
-        figure;
-        pcshow(ptCloudOrig);
-        hold on;
+        
 
         % plot sphere
         [X,Y,Z] = sphere;
@@ -45,10 +45,6 @@ function hw3(questionNum)
         indices = findPointsInROI(ptCloud,roi);
         ptCloudB = select(ptCloudOrig,indices);
 
-        % display cloud
-        figure;
-        pcshow(ptCloudOrig);
-        hold on;
 
         % locate cylinder
         [center,axis,radius] = Q2(ptCloudB);
