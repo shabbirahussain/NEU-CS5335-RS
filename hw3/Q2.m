@@ -12,33 +12,43 @@
 %%==================================================
 function [center,axis,radius] = Q2(ptCloud)
     %% Constants
-    MAX_ITER1  = 1000;
-    MAX_ITER2  = 10;
-    EPSILON    = 0.1;
+    MAX_ITER1      = 50;
+    MAX_ITER_AXIS  = 100;
+    MAX_ITER_CIRC  = 1000;
+    EPSILON    = 0.001;
     
     %% Initialization
-    nm  = pcnormals(ptCloud, 60);
+    nm  = pcnormals(ptCloud, 20);
     pc  = ptCloud.Location;
     pct = pc';
-    mCnt = 0; i = 0;
+    inCnt = -1; i = 0;
     
     %% Calculate samples
-    while(i<MAX_ITER1 || mCnt == 0)
+    while(i<MAX_ITER1 || inCnt == -1)
         i = i + 1;
         
-        %% Pick random 2 points
-        idx  = getNRandIdx(pc, 2);
-        
-        %% Get surface normals
-        n1   = nm(idx(1), :); - pc(idx(1), :);
-        n2   = nm(idx(2), :); - pc(idx(2), :);
-        
-        %plotLine(n1, pc(idx(1),:), 'm');
-        %plotLine(n2, pc(idx(2),:), 'm');
-        
-        %% Calculate orthagonal vector to surface normals
-        nat = cross(n1, n2);
-        nat = nat / norm(nat);
+        %% Calculate axis
+        nat = zeros(1, 3);
+        for k=1:MAX_ITER_AXIS
+            %% Pick random 2 points
+            idx  = getNRandIdx(pc, 2);
+
+            %% Get surface normals
+            n1   = nm(idx(1), :);
+            n2   = nm(idx(2), :);
+
+            %plotLine(n1, pc(idx(1),:), 'm');
+            %plotLine(n2, pc(idx(2),:), 'm');
+
+            %% Calculate orthagonal vector to surface normals
+            nrm = cross(n1, n2);
+            nrm = nrm / norm(nrm);
+            
+            nat = nat + nrm;
+        end;
+        % Calculate average axis
+        nat = nat/MAX_ITER_AXIS;axis1=nat
+        %plotLine(nat, [0 0 0], 'm');
         na  = nat';
         
         %% Project points to plane orthagonal to axis
@@ -46,29 +56,41 @@ function [center,axis,radius] = Q2(ptCloud)
         xplane = xplane';
         %plot3(xplane(:,1),xplane(:,2),xplane(:, 3));
         
+        % Resample data to thin overlaping points
+        xplane1 = reSamplePts(xplane, 0.05);
+        if(size(xplane1,1)<3) continue; end;
+        %plot3(xplane1(:,1),xplane1(:,2),xplane1(:, 3));
+        
+        
+        %Translate to 2D local point system
+        [pts2D, locx, locy, or] = translate3Dto2D(xplane1);
+        
         %% Try to fit circle to projected points
-        for j=1:MAX_ITER2
+        for j=1:MAX_ITER_CIRC
             %% Generate candidate cicle
             % Sample 3 points out of projected points
-            pts = getNRandPts(xplane, 3);
+            pts = getNRandPts(pts2D, 3);
             
-            % Translate to 2D local point system
-            [locx, locy, pts2D, or] = translate3Dto2D(pts);
             % Fit circle to sample points
-            [nc, nr] = fitCircle(pts2D);
+            [nc, nr] = fitCircle(pts);
+            
+            % Skip iteration if radius too big
+            if(isnan(nr) || nr>0.3) continue; end;
+            
             % Translate to local points back to 3D system
             nc = translate2Dto3D(nc, locx, locy, or);
             
             %% Evaluate fitness
             dist = getDistance(xplane, nc);
-            dist = abs(dist - nr) < EPSILON;
+            dist = abs(dist - nr);
+            dist = dist < EPSILON;
             cnt  = sum(dist);
             
-            if(cnt> mCnt)
+            if(cnt> inCnt)
                 center = nc';
                 radius = nr;
-                axis   = na';
-                mCnt   = cnt;
+                axis   = na;
+                inCnt  = cnt
             end;
         end;
     end;
@@ -121,21 +143,22 @@ end
 % 
 % cite: http://stackoverflow.com/questions/26369618/getting-local-2d-coordinates-of-vertices-of-a-planar-polygon-in-3d-space
 %%==================================================
-function [locx, locy, pts2D, origin] = translate3Dto2D(pts)
+function [pts2D, locx, locy, origin] = translate3Dto2D(pts)
     p0 = pts(1,:); p1 = pts(2,:); p2 = pts(3,:);
+    
     loc0 = p0;                       % local origin
     locx = p1 - loc0;                % local X axis
-    normal = cross(locx, p2 - loc0); % vector orthogonal to polygon plane
-    locy   = cross(normal, locx);    % local Y axis
+    locz = cross(locx, p2 - loc0);   % vector orthogonal to polygon plane
+    locy = cross(locz, locx);        % local Y axis
     
     locx = locx/norm(locx);
     locy = locy/norm(locy);
     
     pts2D = zeros(size(pts, 1), 2);
     for i=1:size(pts, 1)
-        p = pts(i);
-        pts2D(i,:) = [dot(p - loc0, locx)    % local X coordinate
-                      dot(p - loc0, locy)];  % local Y coordinate
+        p = pts(i,:) - loc0;
+        pts2D(i,:) = [dot(p, locx)    % local X coordinate
+                      dot(p, locy)];  % local Y coordinate
     end;
     origin = loc0;
 end
@@ -155,10 +178,33 @@ end
 %
 % cite: http://stackoverflow.com/questions/26369618/getting-local-2d-coordinates-of-vertices-of-a-planar-polygon-in-3d-space
 %%==================================================
-function pts3D = translate2Dto3D(pts, origin, locx, locy)
+function pts3D = translate2Dto3D(pts, locx, locy, origin)
     pts3D = zeros(size(pts, 1), 3);
     for i=1:size(pts, 1)
         Lx = pts(i,1); Ly = pts(i,2);
         pts3D(i,:) = origin + Lx*locx + Ly*locy;
+    end;
+end
+
+%% =================================================
+% Function reSamplePts(pts, minDist)
+% --------------------------------------------------
+% Thins the given list of points by minimum distance
+% input: pts -> M x .. matrix of input points
+%        minDist -> minimum distance between two samples(optional)
+% output: nPts -> N x .. matrix of sample indices in range of 1..M, where
+%         N<=M and distance between any two points is > minDist 
+%%==================================================
+function nPts = reSamplePts(pts, minDist)
+    max = size(pts,1);
+    nPts(1,:)= pts(randi(max),:);
+    cnt = 1;
+    for i=1:max
+        dist = getDistance(nPts, pts(i,:));
+        dist = sum(dist<minDist);
+        if(dist>1) continue; end;
+
+        cnt = cnt + 1;
+        nPts(cnt,:)= pts(i,:);
     end;
 end

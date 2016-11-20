@@ -16,7 +16,7 @@ function [center,radius] = Q1(ptCloud)
     
     %% Initialization
     pc  = ptCloud.Location;
-    mCnt = 0;
+    inCnt = -1;
     
     %% Calculate samples
     for i=1:MAX_ITER
@@ -31,10 +31,10 @@ function [center,radius] = Q1(ptCloud)
         dist = abs(dist - nr) < EPSILON;
         cnt  = sum(dist);
         
-        if(cnt> mCnt)
+        if(cnt> inCnt)
             center = nc;
             radius = nr;
-            mCnt   = cnt;
+            inCnt  = cnt
         end;
     end;
 end

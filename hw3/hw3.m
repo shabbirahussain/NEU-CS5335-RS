@@ -26,8 +26,6 @@ function hw3(questionNum)
         % locate sphere
         [center,radius] = Q1(ptCloudB);
 
-        
-
         % plot sphere
         [X,Y,Z] = sphere;
         X = X * radius + center(1);
