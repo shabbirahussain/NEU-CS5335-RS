@@ -21,7 +21,7 @@ function [center,radius] = Q1(ptCloud)
     %% Calculate samples
     for i=1:MAX_ITER
         %% Pick random 4 points
-        pts = getNRandPts(pc, 4);
+        pts = datasample(pc, 4);
         
         %% Generate candidate sphere
         [nc, nr] = fitSphere(pts);

@@ -12,64 +12,59 @@
 %%==================================================
 function [center,axis,radius] = Q2(ptCloud)
     %% Constants
-    MAX_ITER1      = 50;
-    MAX_ITER_AXIS  = 100;
-    MAX_ITER_CIRC  = 1000;
-    EPSILON    = 0.001;
+    MAX_ITER_AXIS  = 10;
+    MAX_ITER_CIRC  = 500;
+    IN_THRESHOLD   = 7000;
+    EPSILON        = 0.001;
     
     %% Initialization
-    nm  = pcnormals(ptCloud, 20);
+    nm  = pcnormals(ptCloud, 500);
     pc  = ptCloud.Location;
     pct = pc';
-    inCnt = -1; i = 0;
+    inCnt = -1;
     
     %% Calculate samples
-    while(i<MAX_ITER1 || inCnt == -1)
-        i = i + 1;
-        
+    while(inCnt < IN_THRESHOLD)
         %% Calculate axis
         nat = zeros(1, 3);
         for k=1:MAX_ITER_AXIS
-            %% Pick random 2 points
-            idx  = getNRandIdx(pc, 2);
-
-            %% Get surface normals
-            n1   = nm(idx(1), :);
-            n2   = nm(idx(2), :);
-
-            %plotLine(n1, pc(idx(1),:), 'm');
-            %plotLine(n2, pc(idx(2),:), 'm');
+            %% Pick 2 random surface normals
+            n  = datasample(nm, 2);
 
             %% Calculate orthagonal vector to surface normals
-            nrm = cross(n1, n2);
+            nrm = cross(n(1,:), n(2,:));
             nrm = nrm / norm(nrm);
             
             nat = nat + nrm;
         end;
         % Calculate average axis
-        nat = nat/MAX_ITER_AXIS;axis1=nat
+        nat = nat/MAX_ITER_AXIS;
+        nat = nat/norm(nat);
+        
+        disp(['axis= ' num2str(nat)]);
         %plotLine(nat, [0 0 0], 'm');
         na  = nat';
         
         %% Project points to plane orthagonal to axis
-        xplane = (eye(3,3) - na*nat) * pct;
-        xplane = xplane';
+        xplane  = (eye(3,3) - na*nat) * pct;
+        xplane  = xplane';
+        xplane1 = xplane;
         %plot3(xplane(:,1),xplane(:,2),xplane(:, 3));
         
         % Resample data to thin overlaping points
-        xplane1 = reSamplePts(xplane, 0.05);
+        xplane1 = reSamplePts(xplane, 0.01);
         if(size(xplane1,1)<3) continue; end;
         %plot3(xplane1(:,1),xplane1(:,2),xplane1(:, 3));
         
         
-        %Translate to 2D local point system
+        % Translate to 2D local point system
         [pts2D, locx, locy, or] = translate3Dto2D(xplane1);
         
         %% Try to fit circle to projected points
         for j=1:MAX_ITER_CIRC
             %% Generate candidate cicle
             % Sample 3 points out of projected points
-            pts = getNRandPts(pts2D, 3);
+            pts = datasample(pts2D, 3);
             
             % Fit circle to sample points
             [nc, nr] = fitCircle(pts);
@@ -90,10 +85,12 @@ function [center,axis,radius] = Q2(ptCloud)
                 center = nc';
                 radius = nr;
                 axis   = na;
-                inCnt  = cnt
+                inCnt  = cnt;
+                disp(['    inCount= ' num2str(cnt)]);
             end;
         end;
     end;
+    inCnt
 end
 
 

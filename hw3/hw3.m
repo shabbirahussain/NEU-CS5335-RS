@@ -10,7 +10,7 @@ function hw3(questionNum)
     ptCloudOrig = ptCloud;
 
     % display cloud
-    %close all; figure;
+    close all; fig=figure;set(fig,'WindowStyle','docked');
     pcshow(ptCloudOrig);
     hold on;
 
