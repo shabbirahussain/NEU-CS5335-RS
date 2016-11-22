@@ -13,7 +13,7 @@
 function [center,axis,radius] = Q2(ptCloud)
     %% Constants
     MAX_ITER_CIRC  = 500;       % Max number of iterations to fit circle in projection
-    IN_THRESHOLD   = 9000;      % Threshold for inlier calculation [7000-10000]
+    IN_THRESHOLD   = 10000;     % Threshold for inlier calculation [7000-10000]
     EPSILON        = 0.001;     % Error tolerance for fitness calculation
     PC_NN_COUNT    = 500;       % Number of neighbors of point cloud for surface normal calculation
     RE_SAMPLE_DIST = 0.01;      % Min distance between 2 points on projection for re sampling
@@ -88,12 +88,16 @@ function [center,axis,radius] = Q2(ptCloud)
                 
                 %% Calculate height of cylinder
                 % Project points to plane parallel to axis
-                xplane2  = (eye(3,3) - n1'*n1) * pct;
+                temp  = (eye(3,3) - n1'*n1) * pct;
+                
+                %plotLine(n1, [0 0 0], 'm');
+                %plotLine(nat, [0 0 0], 'm');
+                %plot3(temp(:,1),temp(:,2),temp(:, 3));
 
                 % Translate to 2D local point system
-                [nPts2D, ~, ~, ~] = translate3Dto2D(xplane2');
-                nPts2D = max(nPts2D) - min(nPts2D);
-                height = nPts2D(2);
+                [temp, ~, ~, ~] = translate3Dto2D(temp');
+                temp   = max(temp) - min(temp);
+                height = temp(2);
                 
                 %% Reposition center
                 center = center + (axis * height/2);
