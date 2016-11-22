@@ -12,34 +12,28 @@
 %%==================================================
 function [center,axis,radius] = Q2(ptCloud)
     %% Constants
-    MAX_ITER_AXIS  = 10;
-    MAX_ITER_CIRC  = 500;
-    IN_THRESHOLD   = 7000;
-    EPSILON        = 0.001;
+    MAX_ITER_CIRC  = 500;       % Max number of iterations to fit circle in projection
+    IN_THRESHOLD   = 9000;      % Threshold for inlier calculation [7000-10000]
+    EPSILON        = 0.001;     % Error tolerance for fitness calculation
+    PC_NN_COUNT    = 500;       % Number of neighbors of point cloud for surface normal calculation
+    RE_SAMPLE_DIST = 0.01;      % Min distance between 2 points on projection for re sampling
     
     %% Initialization
-    nm  = pcnormals(ptCloud, 500);
+    nm  = pcnormals(ptCloud, PC_NN_COUNT);
     pc  = ptCloud.Location;
     pct = pc';
     inCnt = -1;
     
     %% Calculate samples
-    while(inCnt < IN_THRESHOLD)
+    found = false;
+    while(~found)
         %% Calculate axis
-        nat = zeros(1, 3);
-        for k=1:MAX_ITER_AXIS
-            %% Pick 2 random surface normals
-            n  = datasample(nm, 2);
+        % Pick 2 random surface normals
+        n  = datasample(nm, 2); n1 = n(1,:); n2 = n(2,:);
 
-            %% Calculate orthagonal vector to surface normals
-            nrm = cross(n(1,:), n(2,:));
-            nrm = nrm / norm(nrm);
-            
-            nat = nat + nrm;
-        end;
-        % Calculate average axis
-        nat = nat/MAX_ITER_AXIS;
-        nat = nat/norm(nat);
+        % Calculate orthagonal vector to surface normals
+        nat = cross(n1, n2);
+        nat = nat / norm(nat);
         
         disp(['axis= ' num2str(nat)]);
         %plotLine(nat, [0 0 0], 'm');
@@ -48,14 +42,11 @@ function [center,axis,radius] = Q2(ptCloud)
         %% Project points to plane orthagonal to axis
         xplane  = (eye(3,3) - na*nat) * pct;
         xplane  = xplane';
-        xplane1 = xplane;
-        %plot3(xplane(:,1),xplane(:,2),xplane(:, 3));
         
         % Resample data to thin overlaping points
-        xplane1 = reSamplePts(xplane, 0.01);
+        xplane1 = reSamplePts(xplane, RE_SAMPLE_DIST);
         if(size(xplane1,1)<3) continue; end;
         %plot3(xplane1(:,1),xplane1(:,2),xplane1(:, 3));
-        
         
         % Translate to 2D local point system
         [pts2D, locx, locy, or] = translate3Dto2D(xplane1);
@@ -82,14 +73,36 @@ function [center,axis,radius] = Q2(ptCloud)
             cnt  = sum(dist);
             
             if(cnt> inCnt)
-                center = nc';
-                radius = nr;
-                axis   = na;
                 inCnt  = cnt;
                 disp(['    inCount= ' num2str(cnt)]);
             end;
+            
+            %% Is threshold passed?
+            if(cnt > IN_THRESHOLD)
+                center = nc';
+                radius = nr;
+                axis   = na;
+                found  = true;
+                
+                axis(3) = abs(axis(3));
+                
+                %% Calculate height of cylinder
+                % Project points to plane parallel to axis
+                xplane2  = (eye(3,3) - n1'*n1) * pct;
+
+                % Translate to 2D local point system
+                [nPts2D, ~, ~, ~] = translate3Dto2D(xplane2');
+                nPts2D = max(nPts2D) - min(nPts2D);
+                height = nPts2D(2);
+                
+                %% Reposition center
+                center = center + (axis * height/2);
+            end;
         end;
     end;
+    axis
+    center
+    radius
     inCnt
 end
 

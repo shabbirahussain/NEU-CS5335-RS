@@ -11,8 +11,8 @@
 %%==================================================
 function [center,radius] = Q1(ptCloud)
     %% Constants
-    MAX_ITER  = 1000;
-    EPSILON   = 0.001;
+    MAX_ITER  = 1000;       % Maximum number of iterations to run
+    EPSILON   = 0.001;      % Error tolerance for fitness calculation
     
     %% Initialization
     pc  = ptCloud.Location;
@@ -34,7 +34,8 @@ function [center,radius] = Q1(ptCloud)
         if(cnt> inCnt)
             center = nc;
             radius = nr;
-            inCnt  = cnt
+            inCnt  = cnt;
+            disp(['    inCount= ' num2str(cnt)]);
         end;
     end;
 end
