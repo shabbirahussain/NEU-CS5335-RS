@@ -16,7 +16,8 @@ function col = isInColision(img, rob, len, q)
     MAX_SEG = 10;
     
     %% Initialize
-    [iL, iW] = size(img);
+    imgSize = size(img);
+    iL = imgSize(1)/2; iW = imgSize(2)/2;
     
     %% Calculate arm positions
     [~, temp] = rob.fkine(q);
@@ -32,8 +33,9 @@ function col = isInColision(img, rob, len, q)
         x = linspace(pos(i,1), pos(i+1,1), MAX_SEG); x=len(i) * x' + iL;
         y = linspace(pos(i,2), pos(i+1,2), MAX_SEG); y=len(i) * y' + iW;
         
+        x = round(x); y = round(y);
         % Append to point list
-        pts(s:e) =  y + (i-1)*x;
+        pts(s:e) =  sub2ind(imgSize, x, y);
         s = e + 1; e = e + MAX_SEG;
     end
     pts = round(pts);
