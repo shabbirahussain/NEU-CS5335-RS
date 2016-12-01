@@ -15,6 +15,8 @@ function saveResults(img, lab)
     tPath = strcat(TARGET_PATH, name);
     lPath = strcat(LABEL_PATH , name);
     
+    img = img > 0; % Convert to boolean
+    
     imwrite(img, tPath, OUTPUT_FORMAT);
     imwrite(lab, lPath, OUTPUT_FORMAT);
 end
