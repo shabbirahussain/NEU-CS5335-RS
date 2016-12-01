@@ -13,7 +13,7 @@
 %%==================================================
 function col = isInColision(img, rob, len, q)
     %% Constants
-    MAX_SEG = 20;
+    MAX_SEG = 10;
     
     %% Initialize
     [iL, iW] = size(img);

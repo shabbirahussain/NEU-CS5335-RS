@@ -24,15 +24,15 @@ function img = createImage(nObs, res)
     
     %% ADD Obstacles
     for i=1:nObs
-        path = strcat(SOURCE_PATH, fnames(randi(numfids)).name);
-        obj  = imfill(imread(path));
+        imgPath = strcat(SOURCE_PATH, fnames(randi(numfids)).name);
+        %imgPath = strcat(SOURCE_PATH, 'brick-20.gif');
+        obj  = imread(imgPath);
 
         qSize = floor(res/2);
         % If object occupies more than 1 quadrant resize image
         if(max(size(obj)) > qSize)  
             obj = imresize(obj, [qSize qSize]);
         end
-        obj = 255 * (obj>0);
         [l, w] = size(obj);
 
         % Create a quadrant and place image into it

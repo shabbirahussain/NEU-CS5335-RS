@@ -7,18 +7,21 @@ function data_generator()
     %% Constants
     createConstants();
     ARM_LEN1    = 0.5;  %px
-    MAX_OBSTACLES = 3;
+    MAX_OBSTACLES = 1;
     
     DATASET_SIZE= 1;
     RESULT_DIM  = 101;
+    
+    %% Initialize
+    
     
     %% Create a 2D Robot
     q1Init = [10 2];
     lenMat = [ARM_LEN1, ARM_LEN1];
     rob = create2DRobot(lenMat);
     
-    % Recalibrate length to be 25% of visible area
-    len = 0.25 * RESULT_DIM / sum(lenMat);
+    % Recalibrate length to be 50% of visible area
+    len = 0.5 * RESULT_DIM / sum(lenMat);
     lenMat = lenMat * len;
     
     %% Generate data samples
@@ -34,7 +37,7 @@ function data_generator()
     rob.plot(q1Init,'jointdiam',0);
     figure(2);
     image(lab*255);
-    
+    assignin('base', 'rob',rob);
 end
 
 
