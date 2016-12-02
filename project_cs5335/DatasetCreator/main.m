@@ -54,8 +54,9 @@ function plotResults(img, lab, rob, WorldLimits)
     figure(1);
     RI = imref2d(size(img)); 
     RI.XWorldLimits = WorldLimits; RI.YWorldLimits = WorldLimits;
-    imshow(img,RI);
-
+    fig = imshow(img,RI);
+    set(fig,'AlphaData',img);
+    
     figure(2);
     image(lab*255);
     

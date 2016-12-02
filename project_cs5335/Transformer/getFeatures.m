@@ -49,7 +49,7 @@ function [X, Y] = parseFeatures(size)
     Y = zeros(numfids, size * size);
     for i=1:numfids
         X(i,:) = readFile(TARGET_PATH, fnames(i).name);
-        X(i,:) = readFile(LABEL_PATH,  fnames(i).name);
+        Y(i,:) = readFile(LABEL_PATH,  fnames(i).name);
     end
 end
 
