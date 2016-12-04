@@ -45,11 +45,11 @@ function [X, Y] = parseFeatures(size)
     fnames  = dir(strcat(TARGET_PATH, '*.png'));
     numfids = length(fnames);
     
-    X = zeros(numfids, size * size);
-    Y = zeros(numfids, size * size);
+    X = zeros(size * size, numfids);
+    Y = zeros(size * size, numfids);
     for i=1:numfids
-        X(i,:) = readFile(TARGET_PATH, fnames(i).name);
-        Y(i,:) = readFile(LABEL_PATH,  fnames(i).name);
+        X(:,i) = readFile(TARGET_PATH, fnames(i).name, size);
+        Y(:,i) = readFile(LABEL_PATH,  fnames(i).name, size);
     end
 end
 
@@ -60,10 +60,12 @@ end
 %
 % input: tgtPath -> Is the target path of the folder
 %        name    -> Is the name of the file to read
+%        size    -> Is the dimension of the feature image
 % output: arr    -> Returns the output in an array
 %%==================================================
-function arr = readFile(tgtPath, name)
+function arr = readFile(tgtPath, name, size)
     imgPath = strcat(tgtPath, name);
     obj     = imread(imgPath);
-    arr     = reshape(obj, 1, numel(obj));
+    obj     = imresize(obj, [size, size]);
+    arr     = reshape(obj, numel(obj), 1);
 end

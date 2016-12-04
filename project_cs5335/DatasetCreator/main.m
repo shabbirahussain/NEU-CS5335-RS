@@ -58,7 +58,7 @@ function plotResults(img, lab, rob, WorldLimits)
     set(fig,'AlphaData',img);
     
     figure(2);
-    image(lab*255);
+    imshow(lab);
     
     % Show robot
     q1Init = [10 2];
