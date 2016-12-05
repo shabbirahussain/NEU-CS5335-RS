@@ -2,7 +2,7 @@
 % Function main()
 % --------------------------------------------------
 % Generates a dataset of source images
-%%==================================================
+%===================================================
 function main()
     %% Constants
     createConstants();
@@ -49,23 +49,7 @@ function main()
 end
 
 
-function plotResults(img, lab, rob, WorldLimits)
-    %% Plot the C-Space
-    figure(1);
-    RI = imref2d(size(img)); 
-    RI.XWorldLimits = WorldLimits; RI.YWorldLimits = WorldLimits;
-    fig = imshow(img,RI);
-    set(fig,'AlphaData',img);
-    
-    figure(2);
-    imshow(lab);
-    
-    % Show robot
-    q1Init = [10 2];
-    figure(1)
-    rob.plot(q1Init,'jointdiam',0);
-    
-end
+
 
 %% TO DEBUG
 % 120116003210785.png

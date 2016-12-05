@@ -17,15 +17,15 @@ function testNet(net, X, T, num)
     
     %% Calculate results
     x2 = X(:,num) ; siz = sqrt(length(x2));
-    y2 = net(x2)  ; 
-    [min(y2) max(y2)]
+    
+    y2 = net(x2)  ; y2 = mapminmax(y2'); y2 = y2'>0;
     y2 = reshape(y2,siz, siz);
-    y2 = round(y2);
+    
     t2 = T(:, num); t2 = reshape(t2,siz, siz);
     
     %% Plot results
-    figure(4);imshow(t2);
-    figure(3);imshow(y2);
+    figure(1);
+    subplot(1,2,1);imshow(t2); title('Target');
+    subplot(1,2,2);imshow(y2); title('Neural Output');
 end
-
 

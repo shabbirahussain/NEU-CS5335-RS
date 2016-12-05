@@ -5,7 +5,7 @@
 %
 % input: img -> Is the dataset image to save
 %        lab -> Is the label image
-%%==================================================
+%===================================================
 function saveResults(img, lab)
     %% Constants
     global TARGET_PATH LABEL_PATH OUTPUT_FORMAT;

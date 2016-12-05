@@ -7,7 +7,7 @@
 % input:  len -> Is 1xn matrix of length
 % output: rob -> Is the robot of the given config
 %         len -> Total length of robot
-%%==================================================
+%===================================================
 function [rob, len] = create2DRobot(len)
     %% Create robot 
     L = zeros(length(len), 4);

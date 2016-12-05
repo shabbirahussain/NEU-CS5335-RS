@@ -8,7 +8,7 @@
 % input: nObs -> Number of obstacles to add
 %        res   -> Is the expected resolution of target image
 % output: img -> Is the image generated from the shapes
-%%==================================================
+%===================================================
 function img = createImage(nObs, res)
     %% Constants
     global SOURCE_PATH SOURCE_PTRN;
@@ -24,7 +24,6 @@ function img = createImage(nObs, res)
     %% ADD Obstacles
     for i=1:nObs
         imgPath = strcat(SOURCE_PATH, fnames(randi(numfids)).name);
-        %imgPath = strcat(SOURCE_PATH, 'brick-20.gif');
         obj  = imread(imgPath);
 
         qSize = floor(res/2);

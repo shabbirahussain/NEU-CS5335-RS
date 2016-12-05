@@ -2,7 +2,7 @@
 % Function createConstants()
 % --------------------------------------------------
 % Sets the environment variables for the program
-%%==================================================
+%===================================================
 function createConstants()
     global SOURCE_PATH TARGET_PATH LABEL_PATH SOURCE_PTRN OUTPUT_FORMAT OBJSTR_PATH;
     

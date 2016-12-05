@@ -10,7 +10,7 @@
 %         q   -> Array of joint angles to check
 % output: col -> True if any segment in arm is in colision
 %
-%%==================================================
+%===================================================
 function col = isInColision(img, rob, len, q)
     %% Constants
     MAX_SEG = 10;
