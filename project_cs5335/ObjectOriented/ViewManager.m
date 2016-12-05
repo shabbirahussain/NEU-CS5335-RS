@@ -82,9 +82,8 @@ classdef ViewManager
         %===================================================
             %% Plot the Output
             %f = ViewManager.getFigureHandle('HIST'); 
-            figure(1);
-            ploterrhist(e);
-            title('Histogram');
+            %figure(10), ploterrhist(e);
+            %title('Histogram');
         end;
     end;
     

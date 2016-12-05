@@ -48,12 +48,12 @@ classdef NNetManager
             ViewManager.showHist(e);
 
             %% Test Network 
-            obj.testNet();
+            obj.test();
             
             out = obj;
         end;
         
-        function testNet(obj, num)
+        function test(obj, num)
         %% =================================================
         % Function testNet(obj)
         % --------------------------------------------------
