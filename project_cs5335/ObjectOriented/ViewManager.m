@@ -14,18 +14,19 @@ classdef ViewManager
             WorldLimits = model.WorldLimits;
             
             %% Plot the World
-            f = ViewManager.getFigureHandle('WORLD'); title('World');
+            f = ViewManager.getFigureHandle('WORLD'); 
             
             % Plot obstacle
             RI = imref2d(size(img)); 
             RI.XWorldLimits = WorldLimits;
             RI.YWorldLimits = WorldLimits;
-            fig = imshow(img,RI);
+            fig = imshow(img,RI, 'InitialMagnification', 'fit');
             set(fig,'AlphaData',img);
 
             % Show robot
             q1Init = [10 2];
             rob.plot(q1Init,'jointdiam',0);
+            title('World');
         end;
         
         function showTarget(lab, time)
@@ -38,8 +39,8 @@ classdef ViewManager
         %        time -> Time taken for execution
         %===================================================
             f = ViewManager.getFigureHandle('TARGET'); 
-            title(strcat('Target : ',time));
-            imshow(lab);
+            imshow(lab, 'InitialMagnification', 'fit');
+            title(strcat('Target : ', num2str(time)));
         end;
         
         function showOutput(out, time)
@@ -53,8 +54,8 @@ classdef ViewManager
         %===================================================
             %% Plot the Output
             f = ViewManager.getFigureHandle('OUTPUT'); 
-            title(strcat('Neural Output : ', time));
-            imshow(out);
+            imshow(out, 'InitialMagnification', 'fit');
+            title(strcat('Neural Output : ', num2str(time)));
         end; 
         
         function showNet(net)
@@ -66,8 +67,9 @@ classdef ViewManager
         % input: net -> Net to show
         %===================================================
             %% Plot the Output
-            f = ViewManager.getFigureHandle('NET'); title('Network');
-            f, view(net);
+            %f = ViewManager.getFigureHandle('NET'); 
+            view(net);
+            title('Network');
         end;
         
         function showHist(e)
@@ -79,8 +81,10 @@ classdef ViewManager
         % input: e -> Is the error array
         %===================================================
             %% Plot the Output
-            f = ViewManager.getFigureHandle('HIST'); title('Histogram');
+            %f = ViewManager.getFigureHandle('HIST'); 
+            figure(1);
             ploterrhist(e);
+            title('Histogram');
         end;
     end;
     
@@ -98,7 +102,7 @@ classdef ViewManager
         %===================================================
             f = findobj(0, 'Name', 'Dashboard');
             if isempty(f)
-                f = figure;
+                f = figure(2);
                 set(f, 'Name', 'Dashboard');
             end;
             switch(plotType)
@@ -114,7 +118,6 @@ classdef ViewManager
 %                     pos = [7, 8];
             end;
             f = subplot(2,2, pos);
-            title(plotType);
         end
    end
 end

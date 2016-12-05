@@ -4,17 +4,17 @@ classdef NNetManager
         net;            % Stores an internal representation of net
     end;
     methods
-        function obj = NNetManager(model, outputSize)
+        function obj = NNetManager(model)
         %% =================================================
-        % Function obj = NNetManager(model, outputSize)
+        % Function obj = NNetManager(model)
         % --------------------------------------------------
         % Default constructor
         %
         % input:  model -> Is the model of the manager
-        %         outputSize -> Is the required output layer size
         % output: Object of the NNetManager
         %%==================================================
             obj.worldModel = model;
+            outputSize     = size(model.T, 1);
             obj.net        = NNetManager.buildNet(outputSize);
         end;
         
@@ -28,6 +28,11 @@ classdef NNetManager
         %         t -> Is the target, UxQ matrix of outputs
         % output: out -> Object of the NNetManager
         %%==================================================
+            if(nargin<=1)
+                x = obj.worldModel.X;
+                t = obj.worldModel.T;
+            end;
+            
             %% Train the Network
             [obj.net, ~] = train(obj.net,x,t);
 
@@ -37,7 +42,7 @@ classdef NNetManager
             %     performance = perform(net,t,y);
 
             %% View the Network
-            ViewManager.showNet(obj.net);
+            %ViewManager.showNet(obj.net);
             
             %% Show plots
             ViewManager.showHist(e);

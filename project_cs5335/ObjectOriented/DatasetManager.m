@@ -29,13 +29,14 @@ classdef DatasetManager
             save(name, 'model', '-v7.3');
         end;
         
-        function model = loadDataset(name, res)
+        function model = loadDataset(name, res, count)
         %% =================================================
-        % Function model = loadDataset(name, res)
+        % Function model = loadDataset(name, res, count)
         % --------------------------------------------------
         % Loads a dataset or builds a new one
         % input:  name -> Is the name of the file to load
         %         res  -> Is the resolution of the model to load
+        %          count -> (optional) number of records to load
         % outpur: model -> Is the model generated from the configuration
         %===================================================
             name  = strcat(Constants.OBJSTR_PATH, name);
@@ -50,7 +51,15 @@ classdef DatasetManager
                 model  = DatasetManager.buildModel(res);
                 model.X = X; model.T = T;
                 save(name, 'model', '-v7.3');
-            end
+            end;
+            
+            if(nargin==3)
+                %model.X = datasample(model.X, count, 2);
+                %model.T = datasample(model.T, count, 2);
+                
+                model.X = model.X(:, 1:count);
+                model.T = model.T(:, 1:count);
+            end;
         end;
     end;
     
