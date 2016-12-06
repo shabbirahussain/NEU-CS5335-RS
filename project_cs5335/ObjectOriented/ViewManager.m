@@ -53,8 +53,8 @@ classdef ViewManager
         %        time -> Time taken for execution
         %===================================================
             %% Plot the Output
-            f = ViewManager.getFigureHandle('OUTPUT'); 
-            imshow(out, 'InitialMagnification', 'fit');
+            f  = ViewManager.getFigureHandle('OUTPUT');
+            im = imshow(out, 'InitialMagnification', 'fit');
             title(strcat('Neural Output : ', num2str(time)));
         end; 
         
@@ -67,7 +67,8 @@ classdef ViewManager
         % input: net -> Net to show
         %===================================================
             %% Plot the Output
-            %f = ViewManager.getFigureHandle('NET'); 
+            return;
+            f = ViewManager.getFigureHandle('NET'); 
             view(net);
             title('Network');
         end;
@@ -81,9 +82,11 @@ classdef ViewManager
         % input: e -> Is the error array
         %===================================================
             %% Plot the Output
-            %f = ViewManager.getFigureHandle('HIST'); 
-            %figure(10), ploterrhist(e);
-            %title('Histogram');
+            return;
+            f = ViewManager.getFigureHandle('HIST'); 
+            figure(10), ploterrhist(e);
+            title('Histogram');
+        end;
         end;
     end;
     
@@ -105,18 +108,18 @@ classdef ViewManager
                 set(f, 'Name', 'Dashboard');
             end;
             switch(plotType)
-%                 case 'NET'
-%                     pos = [1, 2];
                 case 'WORLD' 
                     pos = [1, 3];
                 case 'TARGET'
                     pos = [2];
                 case 'OUTPUT'
                     pos = [4];
+
 %                 case 'HIST'
 %                     pos = [7, 8];
+%                 case 'NET'
+%                     pos = [1, 2];
             end;
-            f = subplot(2,2, pos);
         end
    end
 end

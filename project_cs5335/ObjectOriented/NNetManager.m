@@ -55,7 +55,7 @@ classdef NNetManager
         
         function test(obj, num)
         %% =================================================
-        % Function testNet(obj)
+        % Function testNet(obj, num)
         % --------------------------------------------------
         % Plos a sample out of given X by calculating results from network.
         %

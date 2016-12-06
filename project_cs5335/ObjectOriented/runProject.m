@@ -6,7 +6,7 @@ function runProject(res)
     
     nman = NNetManager(model);
     nman = nman.train;
-    nman.testNet;
+    nman.test;
     
     nmanName = strcat('nman', num2str(res));
     save(strcat(objPath, nmanName, '.mat'), 'nman', '-v7.3');
@@ -29,5 +29,5 @@ end
 % nman100 = NNetManager(model100);
 % clear model100;
 % nman100 = nman100.train;
-% nman100.testNet;
+% nman100.test; 
 % save
