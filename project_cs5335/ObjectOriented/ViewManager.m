@@ -54,7 +54,7 @@ classdef ViewManager
         %===================================================
             %% Plot the Output
             f  = ViewManager.getFigureHandle('OUTPUT');
-            im = imshow(out, 'InitialMagnification', 'fit');
+            imshow(out, 'InitialMagnification', 'fit');
             title(strcat('Neural Output : ', num2str(time)));
         end; 
         
@@ -86,7 +86,6 @@ classdef ViewManager
             f = ViewManager.getFigureHandle('HIST'); 
             figure(10), ploterrhist(e);
             title('Histogram');
-        end;
         end;
     end;
     
@@ -120,6 +119,8 @@ classdef ViewManager
 %                 case 'NET'
 %                     pos = [1, 2];
             end;
+            
+            f = subplot(2,2, pos);
         end
    end
 end
