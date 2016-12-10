@@ -67,6 +67,7 @@ classdef NNetManager
             if (nargin==1)
                 num = randi(size(X,2));
             end;
+            disp(strcat('Sample no:',num2str(num)));
 
             %% Calculate results
             x2  = X(:,num) ; iSize = sqrt(length(x2));
