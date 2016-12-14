@@ -40,22 +40,30 @@ function [xmat, umat] = integrate_dynamics(A,B,R,x0,Pseq,T)
 end
 
 % Calculate control action to take from the current state.
+% u^* = -(R+B'P_{t+1}B)^-1*B'P_{t+1}Ax
 % input: A,B,R -> parameters of system and cost function
 %        P -> P matrix for this time step
 %        x -> current state
 %        i -> current time step of controller
 % output: u -> control action to take
 function u = getControl(A,B,R,Pseq,x,i)
-
+    Pt1 = Pseq{i};
+    u = (-(R + B'*Pt1*B)^-1)*B'*Pt1*A*x;
 end
 
 % Calculate time-varying value function using riccati eqn. (i.e.
 % compute the sequence of P matrices.)
+% P_t = Q + A'P_{t+1}A - A'P_{t+1}B(R+B'P_{t+1}B)^-1 B'P_{t+1}A
 % input: A,B,Qf,Q,R -> parameters of dynamics and cost function
 %        T -> time horizon
 % output: Pseq -> cell array of 4x4 P matrices. Cell array goes from 1 to T
 function Pseq = FH_DT_Riccati(A,B,Qf,Q,R,T)
-
+    Pseq    = cell(1,T);
+    Pseq{T} = Qf;
+    for t=(T-1):-1:1
+        Pt1 = Pseq{t+1};
+        
+        Pseq{t} = Q + A'*Pt1*A - A'*Pt1*B*((R + B'*Pt1*B)^-1)*B'*Pt1*A;
+    end;
 end
-
 
