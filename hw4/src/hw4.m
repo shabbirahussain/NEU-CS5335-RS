@@ -49,8 +49,12 @@ function hw4(questionNum)
     if questionNum == 3
         Rdelta = 10*eye(2); % cost of a change in control input
         [xIC,uIC] = Q3(A,B,QT,Q,R,Rdelta,T,x0);
-        figure;
-        plot(xIC(1,:),xIC(2,:),'gx');
+        [xFH,uFH] = Q1(A,B,QT,Q,R,T,x0);
+        [xRH,uRH] = Q2(A,B,QT,Q,R,T,x0);
+        figure; hold on;
+        plot(xFH(1,:),xFH(2,:),'gx');
+        plot(xRH(1,:),xRH(2,:),'rx');
+        plot(xIC(1,:),xIC(2,:),'bx');
         
         figure;
         plot(xIC(5:6,:)');
